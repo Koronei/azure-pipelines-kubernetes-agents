@@ -16,14 +16,14 @@ Create a personal access token with the **Agent Pools(read, manage)** scope foll
 Create a new agent pool foolowing [these instructions](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/pools-queues?#managing-pools-and-queues). Your azure pipelines agents will join this pool later on.
 
 ## Customize, build and publish the docker image
-The Dockerfile available at `dockeragent\ubuntu\16.04\` contains the basic tools needed to run the Azure Pipelines agent on Linux (as documented [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?#linux)) but feel free to customize it with any aditional tools you might need. Then, you will build and publish the image to Docker Hub (if you don't have a Docker ID you can create one for free [here](https://hub.docker.com)).
+The Dockerfile available at `dockeragent\ubuntu\18.04\` contains the basic tools needed to run the Azure Pipelines agent on Linux (as documented [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?#linux)) but feel free to customize it with any aditional tools you might need. Then, you will build and publish the image to Docker Hub (if you don't have a Docker ID you can create one for free [here](https://hub.docker.com)).
 
 Run the following commands in a command prompt to build and publish your image, replacing `yourdockerid` with your Docker ID:
 
 ```
-docker build -t yourdockerid/azpagent:ubuntu-16.04 ./dockeragent/ubuntu/16.04
+docker build -t yourdockerid/azpagent:ubuntu-18.04 ./dockeragent/ubuntu/18.04
 docker login
-docker push yourdockerid/azpagent:ubuntu-16.04
+docker push yourdockerid/azpagent:ubuntu-18.04
 ```
 
 You could also publish your image to a private docker registry like [Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry) but you'll need to update the helm chart to pass the appropriate image pull secret.
@@ -74,7 +74,7 @@ helm install --set image.repository=<IMAGE REPO> --set image.tag:<IMAGE TAG> --s
 
 Example:
 ```
-helm install --set image.repository=julioc/azpagent --set image.tag=ubuntu-16.04 --set azpToken=<TOKEN HERE> --set azpUrl=https://dev.azure.com/julioc --set azpPool=MyPool -f helm-chart\azp-agent\values.yaml azp-agent helm-chart\azp-agent
+helm install --set image.repository=julioc/azpagent --set image.tag=ubuntu-18.04 --set azpToken=<TOKEN HERE> --set azpUrl=https://dev.azure.com/julioc --set azpPool=MyPool -f helm-chart\azp-agent\values.yaml azp-agent helm-chart\azp-agent
 ```
 
 It may take some time to stand up the pods but eventually your deployment should look like this:
@@ -98,5 +98,5 @@ kubectl scale statefulset/azp-agent --replicas 10
 Or by running a helm upgrade with the `replicas` parameter:
 
 ```
-helm upgrade --install --set image.repository=julioc/azpagent --set image.tag=ubuntu-16.04 --set azpToken=<TOKEN HERE> --set azpUrl=https://dev.azure.com/julioc --set azpPool=MyPool --set replicas=10 -f helm-chart\azp-agent\values.yaml azp-agent helm-chart\azp-agent
+helm upgrade --install --set image.repository=julioc/azpagent --set image.tag=ubuntu-18.04 --set azpToken=<TOKEN HERE> --set azpUrl=https://dev.azure.com/julioc --set azpPool=MyPool --set replicas=10 -f helm-chart\azp-agent\values.yaml azp-agent helm-chart\azp-agent
 ```
